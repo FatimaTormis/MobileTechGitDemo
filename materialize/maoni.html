@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+    <title>DELROSARIO ONLY</title>
+
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+      <!--Import Google Icon Font-->
+      <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--Import materialize.css-->
+      <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+
+    <body>
+      <!--Import jQuery before materialize.js-->
+      <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+      <script type="text/javascript" src="js/materialize.min.js"></script>
+
+  <div class="row">
+    <div class="input-field col s6">
+      <input value="" id="first_name2" type="text" class="validate">
+      <label class="active" for="first_name2">First Name</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="input-field col s6">
+      <input value="" id="last_name2" type="text" class="validate">
+      <label class="active" for="last_name2">Last Name</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="input-field col s6">
+      <input value="" id="email" type="text" class="validate">
+      <label class="active" for="email">Email</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="input-field col s6">
+      <input value="" id="username" type="text" class="validate">
+      <label class="active" for="username">Username</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="input-field col s6">
+      <input value="" id="password" type="text" class="validate">
+      <label class="active" for="password">Password</label>
+    </div>
+  </div>
+
+  <script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"> </script>
+
+  <th>
+    <td>
+      <a class="waves-effect waves-light btn-large" id="submit">Submit</a>
+    </td>
+    <td>
+      <a class="waves-effect waves-light btn-large" action="close">Cancel</a>
+    </td>
+  </th>
+    
+
+    <script>
+      //initialize Firebase
+      var myFirebase = new Firebase("https://delrosarioestanol.firebaseio.com/");
+
+      //hook or target the child/node
+      var targetChildRef = myFirebase.child('messageList');
+
+      $('#submit').click(function (e) {
+        //capture enter keyboard
+        // if(e.keyCode == 13)
+        // {
+          //lets assign the text to variable
+
+          var _name = $('#first_name2').val();
+          var _name1 = $('#last_name2').val();
+          var _name2 = $('#email').val();
+          var _name3 = $('#username').val();
+          var _name4 = $('#password').val();
+          var _message = $('#submit').val();
+
+          // lets call the firebase Method push() that will add element to our childRef
+          targetChildRef.push({
+            name: _name,
+            lastname: _name1,
+            email: _name2,
+            username: _name3,
+            password: _name4,
+            // message: _message,
+          });
+          $('#submit').val('');
+        // }
+      }); 
+  </script>
+
+  <div id="divmessages" ></div>
+
+
+
+
+<script>
+
+//instantiate new instance of Firebase for retrieval purpose
+
+var messageList = new Firebase("https://delrosarioestanol.firebaseio.com/messageList");
+
+
+
+
+//call the Event "on" of Firebase Class
+
+messageList.on("value", function(snapshot, prevChildKey) {
+
+
+
+
+var ndex = 0;
+
+var ids = new Array();
+
+
+
+
+//call the function "foreach" of a firebase object
+
+snapshot.forEach(function(childSnapshot) {
+
+ids[ndex++] = childSnapshot.key();
+
+//console.log("Mao ni ang Ids ok? " + ids);
+
+});
+
+
+
+var tfirst = "<table class='striped'><tr><th>FIRST NAME</th><th>LAST NAME</th><th>EMAIL</th><th>USERNAME</th><th>PASSWORD</th></tr>";
+var printMessages = "<hr/>";
+var tlast = "</table>";
+
+
+
+console.log(ids);
+
+for(var i = 0; i < ids.length; i++)
+
+{
+
+//console.log(ids[i]);
+
+var msgbyChild = new Firebase("https://delrosarioestanol.firebaseio.com/messageList/"+ids[i]);
+
+
+
+
+msgbyChild.on("value", function(snapshot) {
+
+var snapdata = snapshot.val();
+
+// printMessages += '<strong>' + snapdata.name + ': ' + '</strong>' + snapdata.lastname + '<br>';
+// printMessages +=  snapdata.name + '<br>' + snapdata.lastname + '<br>' + snapdata.email + '<br>' + snapdata.username + '<br>' + snapdata.password + '<br>';
+
+printMessages += '<tr><td>' +  snapdata.name + '</td><td>' +  snapdata.lastname + '</td><td>' + snapdata.email + '</td><td>' + snapdata.username + '</td><td>'  + snapdata.password + '</td></tr>';
+
+
+
+
+}, function (errorObject) {
+
+console.log("The read failed: " + errorObject.code);
+
+});
+
+// console.log(printMessages);
+
+$("#divmessages").html(tfirst+printMessages+tlast);
+
+}
+
+
+
+
+});
+
+</script>
+    </body>
+  </html>
